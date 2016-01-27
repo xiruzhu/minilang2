@@ -1,0 +1,7 @@
+INSTRUCTIONS
+
+In order to test this assignment
+write in shell ./run.sh /filepath
+or simply ./run.sh and the script will prompt for filepath
+
+It will compile and remove itself on its own
