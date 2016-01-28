@@ -1,0 +1,23 @@
+#fibonacci number calculator
+
+#declaration
+var n: int;
+var current1: int;
+var current2: int;
+var temp: int;
+
+read n; # calculate nth fibonnaci number
+current1 = 0;
+current2 = 1;
+
+while n do
+	temp = current2;
+	current2 = current1 + current2;
+	current1 = temp;
+	n = n -1 - temp + current1 * current2;
+done
+
+print current1;
+print current2;
+
+#done!

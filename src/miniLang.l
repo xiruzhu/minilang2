@@ -44,7 +44,7 @@ RW	"read"|"print"
 "done"		{set_val(STRING); return DONE;}
 "string"	{set_val(STRING); return STRING_TYPE;}
 "endif"		{set_val(STRING); return END;}
-{RW}		return set_val(RW);
+{RW}		{set_val(STRING); return RW;}
 {ID}		{set_val(STRING); return ID;}
 "+"			{line_char++; return ADD;}
 "-"			{line_char++; return MINUS;}

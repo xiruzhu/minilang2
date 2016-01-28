@@ -10,11 +10,11 @@ cd src
 bison --yacc --defines miniLang.y
 flex miniLang.l
 cd ..
-gcc -std=c99 ./src/lex.yy.c ./src/y.tab.c ./src/y.tab.h ./src/main.c -lfl -o run
+gcc -std=c99 ./src/lex.yy.c ./src/y.tab.c ./src/abstract_tree.c ./src/y.tab.h ./src/main.c -lfl -o run
 clear
 cat $S | ./run
 
-rm run
+#rm run
 cd src
 
 rm lex.yy.c

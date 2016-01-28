@@ -1,0 +1,38 @@
+#Start
+#if
+var test1 : int;
+   var test2 : float; #testing no care for spacing
+                        var test3 : string;
+               var test4:float;
+
+               test4=-0.0004042;
+#declaring some values
+#"what is life"
+
+read test3;
+test3 = "what is life,ds.";
+read test2;
+
+test1 = test1 + 5---4343.44 -442 -23.44 -0.34;  #Chain minuses
+      # testing#     testing2
+
+if test1 then
+   test2 = test2 + test2 * test2;
+   else#hue
+   test3 = test3 /test2;     #   what is life #
+endif
+
+if test2 then
+   if test3 then
+      test1 = test1 - test1;
+   else
+      test2 = test1 * test2;
+   endif
+endif
+
+while test3 do
+   test1 = test2;
+done
+
+print test2; # So this program doesn't do anything but test out some stuff
+print test3;
