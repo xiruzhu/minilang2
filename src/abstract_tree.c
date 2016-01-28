@@ -376,6 +376,8 @@ int load_sym_tbl(node * tree, sym_tbl * table){
 }
 
 int type_square(int l, int r, int op){
+	if(l < 0 || r < 0)
+		return -1;
 	if(l == int_val)
 		l = 0;
 	else if(l == float_val)
@@ -397,34 +399,106 @@ int type_square(int l, int r, int op){
 int evaluate_func_stmt(node * tree, sym_tbl * table){
 	int type1;
 	int type2;
-	printf("Test %d %d\n", tree->type, func_stmt);
 	if(tree->type != func_stmt){
 		return -1;
 	}
-	printf("Testing\n");
 	switch(tree->num_child_nodes){
 		case 1:
 				if(tree->childs[0]->type == id_val)
 					return find_symbol(table, tree->childs[0]->val.str_val) -11;
 				return tree->childs[0]->type;
 		case 2:
-				return evaluate_func_stmt(tree->childs[1], table); //Since type will be the same as the - func
+				type1 = tree->childs[0]->type;
+				if(type1 == id_val)
+						type1 = find_symbol(table, tree->childs[0]->val.str_val) - 11;
+				return type1;
+				//return evaluate_func_stmt(tree->childs[1], table); //Since type will be the same as the - func
 		default:
 				//this will be something like x1 ops x2 ops... xn
-				type1 = tree->childs[0]->type;
+				{
+				int id_type;
+				int valid = -1; //Start out invalid
+				int current_type = -2;
+				int current_ops = add_min_val;
+				printf("Chairmaaannn? %d\n", type1);
+				for(int i = tree->num_child_nodes-1; i > 0; i++){
+					switch(tree->childs[i]->type){
+						case int_val:
+								if(valid == -1)
+									valid = 1;
+								else
+									valid = -1;
+
+								if(current_type == -2)
+									current_type = tree->childs[i]->type;
+								else{
+									current_type = type_square(current_type, int_val, current_ops);
+									if(current_type == -1)
+										return -1;
+									current_ops = add_min_val;
+								}
+								break;
+						case float_val:
+								if(valid == -1)
+									valid = 1;
+								else
+									valid = -1;
+
+								if(current_type == -2)
+									current_type = tree->childs[i]->type;
+								else{
+									current_type = type_square(current_type, float_val, current_ops);
+									if(current_type == -1)
+										return -1;
+									current_ops = add_min_val;
+								}
+								break;
+						case str_val:
+								if(valid == -1)
+									valid = 1;
+								else
+									valid = -1;
+
+								if(current_type == -2)
+									current_type = tree->childs[i]->type;
+								else{
+									current_type = type_square(current_type, str_val, current_ops);
+									if(current_type == -1)
+										return -1;
+									current_ops = add_min_val;
+								}
+								break;
+						case id_val:
+								if(valid == -1)
+									valid = 1;
+								else
+									valid = -1;
+								id_type = find_symbol(table, tree->childs[i]->val.str_val);
+								if(id_type == -1)
+									return -1;
+
+								if(current_type == -2)
+									current_type = id_type;
+								else{
+									current_type = type_square(current_type, id_val, current_ops);
+									if(current_type == -1)
+										return -1;
+									current_ops = add_min_val;
+								}
+								break;								
+					}
+				}
+			}
+				/*
 				if(type1 == id_val)
 						type1 = find_symbol(table, tree->childs[0]->val.str_val) - 11;
 				for(int i = 0; i < tree->num_child_nodes - 2; i += 2){
 					type2 = tree->childs[i+2]->type;
 					if(type2 == id_val)
 						type2 = find_symbol(table, tree->childs[i+2]->val.str_val) - 11;
-
-					printf("Testing %d %d %d\n", type1, type2, tree->childs[i+1]->type);
-
 					type1 = type_square(type1, type2, tree->childs[i+1]->type);
-					printf("Testing %d\n", type1);
 				}
-				printf("Returned %d\n", type1);
+				*/
 				return type1;
 	}
 
@@ -449,6 +523,7 @@ int traverse_tree(node * tree, sym_tbl * table){
 					}
 					if(traverse_tree(tree->childs[1], table) != 0)
 						return 1;
+					break;
 			case if_stmt:
 					if(tree->childs[0]->type == id_val){
 						sym = find_symbol(table, tree->childs[0]->val.str_val) - 11;
@@ -467,41 +542,49 @@ int traverse_tree(node * tree, sym_tbl * table){
 						if(traverse_tree(tree->childs[1], table) != 0)
 						return 1;
 					}
+					break;
 			case func_stmt:
 					if( evaluate_func_stmt(tree, table) == -1){
 						printf("Invalid types for operation\n");
 						return 1;
 					}
+					break;
 			case assign_stmt:
+					printf("CHAIRMAN %d\n", tree->childs[1]->type);
 					if(tree->childs[1]->type == str_val){
 						sym = find_symbol(table, tree->childs[0]->val.str_val);
 						if(sym != str_val || sym == -1)
 							return 1;
 						return 0;
 					}
-					printf("testing %d\n", tree->childs[1]->type);
+					printf("Chairman here\n");
 					sym = evaluate_func_stmt(tree->childs[1], table);
 					if(sym == -1)
 						return 1;
+					printf("Chairman here %d\n", tree->childs[0]->type);
+
 					if(tree->childs[0]->type != id_val){
 						printf("Variable Required\n");
 						return 1;
 					}
-					else
+					else{ 
+						printf("Papa Xi\n");
 						if( type_square(find_symbol(table, tree->childs[0]->val.str_val)-11, sym, add_min_val) == -1)
-							return 1;
+								return 1;
+						}
+						break;
 			case stmt_list:
-						print(tree);
-						printf("%d\n", tree->num_child_nodes);
+						printf("-----------------------------------\n");
 					for(int i = 0; i < tree->num_child_nodes; i++){
 						printf("//////////////////////////////////\n");
 						print(tree->childs[i]);
-						printf("%d\n", tree->childs[i]->type);
+						printf("\nChild %d type %d\n", i, tree->childs[i]->type);
 						sym = traverse_tree(tree->childs[i], table);
-						printf("sym %d\n", sym);
+						printf("Sym Test %d\n", sym);
 						if(sym == 1)
 							return 1;
 					}
+					break;
 			default:
 					return 0;
 		}
